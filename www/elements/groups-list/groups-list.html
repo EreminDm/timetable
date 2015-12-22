@@ -1,0 +1,62 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="groups-list">
+    <style>
+        :host button {
+            display: block;
+            width: 80%;
+            box-sizing: border-box;
+            margin: 10px auto;
+        }
+        :host h1 {
+            margin: 20px;
+        }
+        :host h2 {
+            text-align: center;
+        }
+        :host ul {
+            margin: 0;
+            padding: 0;
+            border-top: 1px solid grey;
+        }
+
+        :host ul li {
+            font-size: 1.25em;
+            padding: 10px;
+            padding-left: 25px;
+            border-bottom: 1px solid grey;
+        }
+    </style>
+    <template>
+        <ul>
+        <template is="dom-repeat" items="{{groups}}">
+            <li on-click="doClick">{{item.name}}</li>
+        </template>
+        </ul>
+    </template>
+</dom-module>
+<script>
+    'use strict';
+    Polymer({
+        is: 'groups-list',
+        properties: {
+            courseId: {
+                type: Number,
+                value: 1,
+            },
+            groups: {
+                type: Array,
+                value: []
+            }
+        },
+
+        doClick: function (event, data) {
+            var groupId = event.model.item.id;
+            this.fire('group-selected', { groupId: groupId });
+        },
+
+        returnToPrev: function () {
+            this.fire('prev-page');
+        }
+    });
+</script>

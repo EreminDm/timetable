@@ -1,0 +1,171 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../course-list/course-list.html">
+<link rel="import" href="../groups-list/groups-list.html">
+<link rel="import" href="../lessons-list/lessons-list.html">
+<link rel="import" href="../app-header/app-header.html">
+
+<dom-module id="timetable-app">
+    <style>
+        app-header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+        }
+
+        course-list,
+        groups-list,
+        lessons-list{
+            margin-top: calc(4.3333333333333em - 1px);
+            display: block;
+            height: calc(100vh - 4.3333333333333em);
+        }
+    </style>
+    <template>
+        <app-header id="header"
+                    caption="{{currentCaption}}"
+                    hasBackButton="{{showBackButton}}"
+                    on-prev-page="onPrevPage"></app-header>
+        <course-list id="coursesList"
+                     on-course-selected="changeCourse"
+                     hidden="{{courseSelected}}"></course-list>
+        <groups-list id="groupsList"
+                     on-prev-page="backToCourseSelection"
+                     on-group-selected="changeGroup"
+                     hidden="{{_groupsListHidden(courseSelected,groupSelected)}}"></groups-list>
+        <lessons-list id="lessonsList"
+                      on-prev-page="backToGroupSelection"
+                      on-prev-day="showPrevDay"
+                      on-next-day="showNextDay"
+                      hidden="{{_lessonsListHidden(courseSelected,groupSelected)}}"></lessons-list>
+    </template>
+</dom-module>
+<script>
+    'use strict';
+    Polymer({
+        is: 'timetable-app',
+        properties: {
+            currentCaption: {
+                type: String,
+                value: "Выберите курс"
+            },
+
+            showBackButton: {
+                type: Boolean,
+                value: false
+            },
+
+            groupId: {
+                type: Number,
+                value: 0
+            },
+
+            week: {
+                type: Number,
+                value: 0
+            },
+
+            dayOfWeek: {
+                type: Number,
+                value: 0
+            }
+        },
+
+        changeCourse: function (item, data) {
+            this.courseSelected = true;
+            this.$.groupsList.groups = api.getGroups(data.courseId);
+            this.$.header.setParameters("Выберите группу", true);
+        },
+
+        changeGroup: function (item, data) {
+            this.groupSelected = true;
+            this.$.lessonsList.lessons = [];
+            this.groupId = data.groupId;
+            this.updateLessons();
+            this.$.header.setParameters(api.getGroupName(data.groupId), true);
+        },
+
+        updateLessons: function () {
+            var week = this.week;
+            var dayOfWeek = this.dayOfWeek;
+            var currentDay = moment().weeks(this.week).days(this.dayOfWeek + 1);
+            this.$.lessonsList.dayInfo = currentDay.format("MMMM Do dddd");
+            api.getLessons(week, this.groupId).then(function (data) {
+                this.$.lessonsList.lessons = data.lessons[dayOfWeek];
+            }.bind(this));
+        },
+
+        backToCourseSelection: function () {
+            this.courseSelected = false;
+            this.groupSelected = false;
+            this.$.header.setParameters("Выберите курс", false);
+        },
+
+        onPrevPage: function () {
+            // If lessons shown then we return to group selection.
+            if (!this._lessonsListHidden(this.courseSelected, this.groupSelected)) {
+                this.backToGroupSelection();
+            } else {
+                this.backToCourseSelection();
+            }
+        },
+
+        backToGroupSelection: function () {
+            this.groupSelected = false;
+            this.$.header.setParameters("Выберите группу", true);
+        },
+
+        _groupsListHidden: function (courseSelected, groupSelected) {
+            return !courseSelected || groupSelected;
+        },
+
+        _lessonsListHidden: function (courseSelected, groupSelected) {
+            return !courseSelected || !groupSelected;
+        },
+
+        showPrevDay: function () {
+            this.dayOfWeek--;
+            if (this.dayOfWeek == -1) {
+                this.dayOfWeek = 5;
+                this.week--;
+
+                if (this.week < 6) {
+                    this.week = 6;
+                    this.dayOfWeek = 0;
+                    return;
+                }
+            }
+
+            this.updateLessons();
+        },
+
+        showNextDay: function () {
+            this.dayOfWeek++;
+            if (this.dayOfWeek == 6) {
+                this.dayOfWeek = 0;
+                this.week++;
+
+                if (this.week > 25) {
+                    this.week = 25;
+                    this.dayOfWeek = 5;
+                    return;
+                }
+            }
+
+            this.updateLessons();
+        },
+
+        ready: function () {
+            this.courseSelected = false;
+            this.groupSelected = false;
+            this.$.coursesList.courses = api.getCourses();
+            this.week = moment().week();
+            var dayOfWeek = moment().weekday();
+            if (dayOfWeek == -1 || dayOfWeek == 6) {
+                dayOfWeek = 0;
+            }
+
+            this.dayOfWeek = dayOfWeek;
+        }
+    });
+</script>

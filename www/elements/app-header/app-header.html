@@ -1,0 +1,87 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="app-header">
+    <style>
+        :host {
+            height: 3em;
+            padding: 0.6666666666em;
+            background-color: #999999;
+            border-bottom: 1px solid white;
+        }
+
+        .app-title {
+            font-size: 2em;
+            padding-left: 0.4em;
+            line-height: 1.5em;
+            color: white;
+        }
+
+        .commands {
+            color: white;
+            line-height: 30px;
+        }
+
+        i {
+            color: white;
+        }
+
+        i.fa-angle-left {
+            padding-right: 5px;
+        }
+    </style>
+    <template>
+        <i class="fa fa-angle-left fa-3x"
+           on-click="onBack"
+           hidden="{{!hasBackButton}}"></i>
+        <i class="fa fa-clock-o fa-3x"></i>
+        <div class="app-title flex">{{caption}}</div>
+        <div class="commands">
+            <content></content>
+        </div>
+        <div style="clear: both"></div>
+    </template>
+    <script>
+    (function () {
+        Polymer({
+            is: 'app-header',
+
+            properties: {
+                caption: {
+                    type: String,
+                    value: "Заголовок"
+                },
+
+                hasBackButton: {
+                    type: Boolean,
+                    value: false
+                }
+            },
+
+            hostAttributes: {
+                "class": "horizontal layout"
+            },
+
+            onBack: function () {
+                this.fire('prev-page');
+            },
+
+            _backButtonHidden: function (hasBackButton) {
+                console.log("_backButtonHidden", hasBackButton == 1);
+                return hasBackButton != 1;
+            },
+
+            setParameters: function (caption, hasBackButton) {
+                this.caption = caption;
+                this.hasBackButton = hasBackButton;
+            },
+
+            ready: function () {
+                this.classList.add("horizontal");
+                this.classList.add("layout");
+            }
+        });
+    })();
+    </script>
+</dom-module>
+
+

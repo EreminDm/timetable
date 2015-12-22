@@ -1,0 +1,83 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="course-list">
+    <style>
+        :host {
+            padding-top: 1px;
+        }
+        :host button {
+            display: block;
+            width: 80%;
+            box-sizing: border-box;
+            margin: 10px auto;
+        }
+        :host h1 {
+            margin: 20px;
+            text-align: left;
+        }
+        :host h2 {
+            text-align: left;
+            padding: 10px 20px;
+            border-top: 1px solid #12599b;
+            border-bottom: 1px solid #12599b;
+            color: white;
+            background: #12599b;
+            margin: 0;
+        }
+
+        :host ul {
+            margin: 0;
+            padding: 0;
+            border-top: 1px solid grey;
+        }
+
+        :host ul li {
+            font-size: 1.25em;
+            padding: 10px;
+            padding-left: 25px;
+            border-bottom: 1px solid grey;
+        }
+    </style>
+    <template>
+        <h2>Бакалавриат</h2>
+        <ul>
+        <template is="dom-repeat" items="{{courses}}" filter="isBacalaur">
+            <li on-click="doClick">{{item.name}}</li>
+        </template>
+        </ul>
+        <h2>Магистратура</h2>
+
+        <ul>
+        <template is="dom-repeat" items="{{courses}}" filter="isMagister">
+            <li on-click="doClick">{{item.name}}</li>
+        </template>
+        </ul>
+    </template>
+</dom-module>
+<script>
+    'use strict';
+    Polymer({
+        is: 'course-list',
+        properties: {
+            courses: {
+                type: Array,
+                value: []
+            }
+        },
+
+        isBacalaur: function (item) {
+            return !item.isMagister;
+        },
+
+        isMagister: function (item) {
+            return item.isMagister;
+        },
+
+        doClick: function (event, data) {
+            var course = event.model.item;
+
+            var courseId = course.courseId;
+            this.fire('course-selected', { courseId: courseId });
+        }
+    });
+</script>

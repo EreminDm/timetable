@@ -1,0 +1,148 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/layout/layout.html">
+
+<dom-module id="lessons-list">
+    <style>
+        :host {
+            padding-top: 1px;
+        }
+        :host button {
+            display: block;
+            width: 80%;
+            box-sizing: border-box;
+            margin: 10px auto;
+        }
+        :host h1 {
+            margin: 20px;
+        }
+        :host h2 {
+            text-align: center;
+        }
+
+        :host .lection-info{
+            margin: 10px 10px;
+        }
+
+        :host .lecture-name {
+            padding: 0 10px;
+            border-top: 1px solid #12599b;
+            border-bottom: 1px solid #12599b;
+            color: white;
+            background: #12599b;
+        }
+
+        :host .lesson-info {
+            margin: 0 10px;
+        }
+
+        :host .teacher {
+            font-size: 0.75em;
+        }
+
+        :host .lessons-missing {
+            margin: 0;
+            text-align: center;
+            border-top: 1px solid black;
+            padding-top: 10px;
+        }
+
+        .day-info {
+            padding: 10px;
+            text-align: center;
+            font-size: 1.333333em;
+        }
+    </style>
+    <template>
+        <div class="day-info horizontal layout">
+            <i class="fa fa-angle-double-left fa-lg" on-click="onPrevDay"></i>
+            <span class="flex">{{dayInfo}}</span>
+            <i class="fa fa-angle-double-right fa-lg" on-click="onNextDay"></i>
+        </div>
+        <template is="dom-if" if="{{_lessonsMissing(lessons)}}">
+            <div class="lessons-missing">Нет занятий</div>
+        </template>
+        <template is="dom-repeat" items="{{lessons}}">
+            <div class="lecture-name" hidden="{{_lectureHidden(index,item)}}">
+                <h3>{{lectureName(index,item)}}</h3>
+            </div>
+            <template is="dom-repeat" items="{{item}}">
+            <div class="lection-info layout horizontal">
+            <div class="flex lesson-info">
+            <div class="lesson">
+                <span>{{item.lesson}}</span> (<span>{{item.lessonCode}}</span>)
+            </div>
+            <div class="teacher">
+                <span>{{item.teacher}}</span>
+            </div>
+            </div>
+            <template is="dom-if" if="{{item.room}}">
+            <div class="room">
+                <div>Ауд.</div>
+                <div>{{item.room}}</div>
+            </div>
+            </template>
+            </div>
+            </template>
+        </template>
+    </template>
+</dom-module>
+<script>
+    'use strict';
+    Polymer({
+        is: 'lessons-list',
+        properties: {
+            dayInfo: String,
+
+            lessons: {
+                type: Array,
+                value: []
+            }
+        },
+
+        lectureName: function (index, lessons) {
+            var time = api.getLecturesTime(index, this.lessons);
+            if (time != null) {
+                return (index + 1) + " лекция (" + time.start + "-" + time.end + ")";
+            }
+
+            return null;
+        },
+
+        _lectureHidden: function (index, lessons) {
+            var time = api.getLecturesTime(index, this.lessons);
+            if (time != null) {
+                return false;
+            }
+
+            return true;
+        },
+
+        _lessonsMissing: function (lessons) {
+            return lessons.length != 0 && lessons.every(function (item) {
+                return item.length == 0;
+            });
+        },
+
+        onNextDay: function() {
+            this.fire('next-day');
+        },
+
+        onPrevDay: function () {
+            this.fire('prev-day');
+        },
+
+        attached: function() {
+            var hammertime = new Hammer(this, { domEvents: true });
+            hammertime.on('swipeleft', function(ev) {
+                this.fire('next-day');
+            }.bind(this));
+            hammertime.on('swiperight', function(ev) {
+                this.fire('prev-day');
+            }.bind(this));
+        },
+
+        returnToPrev: function () {
+            this.fire('prev-page');
+        }
+    });
+</script>

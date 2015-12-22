@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.dku.timetable" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>DKU Time table</name>
+    <description>
+        Application which displays time table for DKU
+    </description>
+    <author email="dev@cordova.apache.org" href="http://cordova.io">
+        Apache Cordova Team
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <icon src="icon.png" />
+    <platform name="android">
+        <icon density="ldpi" src="res/icon/android/icon-36-ldpi.png" />
+        <icon density="mdpi" src="res/icon/android/icon-48-mdpi.png" />
+        <icon density="hdpi" src="res/icon/android/icon-72-hdpi.png" />
+        <icon density="xhdpi" src="res/icon/android/icon-96-xhdpi.png" />
+        <!--gap:splash gap:density="ldpi" gap:platform="android" src="res/screen/android/screen-ldpi-portrait.png" />
+        <gap:splash gap:density="mdpi" gap:platform="android" src="res/screen/android/screen-mdpi-portrait.png" />
+        <gap:splash gap:density="hdpi" gap:platform="android" src="res/screen/android/screen-hdpi-portrait.png" />
+        <gap:splash gap:density="xhdpi" gap:platform="android" src="res/screen/android/screen-xhdpi-portrait.png" /-->
+    </platform>
+    <platform name="ios">
+        <icon height="57" src="res/icon/ios/icon-57.png" width="57" />
+        <icon height="72" src="res/icon/ios/icon-72.png" width="72" />
+        <icon height="114" src="res/icon/ios/icon-57-2x.png" width="114" />
+        <icon height="144" src="res/icon/ios/icon-72-2x.png" width="144" />
+        <!--splash height="480" src="res/screen/ios/screen-iphone-portrait.png" width="320" />
+        <splash height="960" src="res/screen/ios/screen-iphone-portrait-2x.png" width="640" />
+        <splash height="1024" src="res/screen/ios/screen-ipad-portrait.png" width="768" />
+        <splash height="768" src="res/screen/ios/screen-ipad-landscape.png" width="1024" />
+        <splash height="1334" src="res/screen/ios/screen-iphone6-portrait-2x.png" width="750" />
+        <splash height="2208" src="res/screen/ios/screen-iphone6plus-portrait-2x.png" width="1242" />
+        <splash height="1242" src="res/screen/ios/screen-iphone6plus-landscape-2x.png" width="2208" /-->
+    </platform>
+    <engine name="android" spec="^4.0.0" />
+    <plugin name="cordova-plugin-crosswalk-webview" spec="^1.2.0" />
+    <plugin name="cordova-plugin-whitelist" spec="^1.0.0" />
+</widget>

@@ -1,0 +1,30 @@
+{
+  "name": "timetable",
+  "version": "1.0.0",
+  "authors": [
+    "Andrey Kurdyumov <kant2002@gmail.com>"
+  ],
+  "description": "The timetable for the DKU",
+  "main": "index.html",
+  "keywords": [
+    "Timetable",
+    "dku"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "axios": "~0.5.4",
+    "polymer": "v0.9.0-rc.1",
+    "jquery": "~2.1.4",
+    "layout": "polymer/layout",
+    "moment": "~2.10.3",
+    "hammerjs": "~2.0.4",
+    "fontawesome": "~4.3.0"
+  }
+}
